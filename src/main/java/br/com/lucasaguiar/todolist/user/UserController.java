@@ -22,13 +22,13 @@ public class UserController {
     @PostMapping(value="/create")
     public ResponseEntity create(@RequestBody UserModel userModel){
       var user = this.userRepository.findByUsername(userModel.getUsername());
-      if (user.size() != 0){
+      if (user != null){
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Usuário ja existe");
       }
       var passwordHashred = BCrypt.withDefaults().hashToString(12, userModel.getPassword().toCharArray());
       userModel.setPassword(passwordHashred);
 
       var userCreated = this.userRepository.save(userModel);
-      return ResponseEntity.status(HttpStatus.CREATED).body("Usuário criado com sucesso: " + userCreated );
+      return ResponseEntity.status(HttpStatus.CREATED).body(userCreated);
     }
 }
